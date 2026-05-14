@@ -318,26 +318,6 @@ python scripts/load_test.py --requests 5000 --concurrency 16
 
 ---
 
-## Resume technical description
-
-> **Advertising Campaign Analytics & Real-Time Bidding Platform** | Python, Kafka, Spark, Redshift, Airflow, SQL
->
-> Built Lambda architecture processing **1M+ ad events/sec with <100ms P99 latency** using Kafka (3-replica partitioning) and Spark Streaming with windowed aggregations for real-time impression tracking, click-through analysis, and conversion attribution achieving **NDCG@10: 0.78** for ad recommendations.
->
-> Architected data warehouse with dimensional modeling (**32 fact tables, 128 dimension tables**) on Redshift; implemented incremental ETL with DBT (**500+ SQL models**) reducing compute costs by **73%**.
->
-> Developed real-time bidding engine with collaborative filtering achieving **<50ms bid decisioning latency** using Redis feature store; optimized S3 data lake reducing storage costs by **62%** through Parquet compression and Hive-style partitioning.
->
-> Built advertiser analytics dashboards tracking **15+ KPIs** (CPM, CPA, CTR, conversion rates, ROAS); implemented A/B testing framework with Thompson sampling multi-armed bandits achieving **23% higher conversions** with statistical significance testing (`p<0.01`).
->
-> Engineered real-time feature engineering pipeline with Airflow (**200+ orchestrated DAGs**) achieving **99.9% pipeline reliability** with automated retry logic and SLA monitoring.
->
-> Implemented causal inference framework using difference-in-differences (DiD) and propensity score matching with 95% confidence intervals; designed power analysis supporting **50+ concurrent experiments** with Benjamini-Hochberg FDR correction maintaining family-wise error rate **<0.05**.
->
-> Deployed distributed infrastructure on AWS with auto-scaling handling **3x traffic spikes** during peak hours; built comprehensive monitoring with Prometheus/Grafana ensuring **99.95% SLA compliance**.
-
----
-
 ## License
 
 MIT (see [`LICENSE`](LICENSE)).
