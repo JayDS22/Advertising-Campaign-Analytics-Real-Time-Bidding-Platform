@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Atlas RTB | Advertising Analytics Platform</title>
+  <link rel="stylesheet" href="/static/css/styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo-mark">A</div>
+      <div>
+        <h1>Atlas <span class="accent">RTB</span></h1>
+        <p class="sub">Real-Time Bidding | Streaming Analytics | Causal Inference</p>
+      </div>
+    </div>
+    <nav class="topnav">
+      <button class="navbtn active" data-tab="overview">Overview</button>
+      <button class="navbtn" data-tab="rtb">RTB Engine</button>
+      <button class="navbtn" data-tab="campaigns">Campaigns</button>
+      <button class="navbtn" data-tab="experiments">Experiments</button>
+      <button class="navbtn" data-tab="causal">Causal</button>
+      <button class="navbtn" data-tab="infra">Infra</button>
+    </nav>
+    <div class="status">
+      <span class="dot pulse"></span><span>LIVE</span>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- ===================== OVERVIEW ===================== -->
+    <section class="tab active" id="tab-overview">
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">Bid Requests</div>
+          <div class="kpi-value" id="kpi-requests">--</div>
+          <div class="kpi-foot"><span id="kpi-bidrate">--</span> bid rate</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">P99 Latency</div>
+          <div class="kpi-value"><span id="kpi-p99">--</span><span class="unit">ms</span></div>
+          <div class="kpi-foot">SLA target &lt; 100ms</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Impressions / 10s</div>
+          <div class="kpi-value" id="kpi-imp">--</div>
+          <div class="kpi-foot"><span id="kpi-ctr">--</span> CTR</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Revenue (Window)</div>
+          <div class="kpi-value">$<span id="kpi-rev">--</span></div>
+          <div class="kpi-foot"><span id="kpi-conv">--</span> conversions</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">SLA Compliance</div>
+          <div class="kpi-value"><span id="kpi-sla">--</span><span class="unit">%</span></div>
+          <div class="kpi-foot">target 99.95%</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Active Campaigns</div>
+          <div class="kpi-value" id="kpi-campaigns">--</div>
+          <div class="kpi-foot">across 8 advertisers</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Throughput (last windows)</h3>
+            <div class="panel-actions">
+              <button class="btn-ghost" id="btn-burst">Generate 200 Bids</button>
+            </div>
+          </div>
+          <canvas id="chart-throughput" height="160"></canvas>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>Latency Percentiles (ms)</h3></div>
+          <canvas id="chart-latency" height="160"></canvas>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h3>Architecture (Lambda pipeline)</h3></div>
+        <div class="arch">
+          <div class="arch-row">
+            <div class="arch-node">Bid Requests<br/><small>1M+/sec</small></div>
+            <div class="arch-arrow">&gt;</div>
+            <div class="arch-node">RTB Engine<br/><small>&lt;50ms</small></div>
+            <div class="arch-arrow">&gt;</div>
+            <div class="arch-node">Kafka<br/><small>3x partition replication</small></div>
+            <div class="arch-arrow">&gt;</div>
+            <div class="arch-node speed">Spark Streaming<br/><small>windowed agg</small></div>
+            <div class="arch-arrow">&gt;</div>
+            <div class="arch-node">Feature Store<br/><small>Redis</small></div>
+          </div>
+          <div class="arch-row">
+            <div class="arch-node batch">S3 Data Lake<br/><small>Parquet, Hive</small></div>
+            <div class="arch-arrow">&gt;</div>
+            <div class="arch-node batch">Airflow<br/><small>200+ DAGs</small></div>
+            <div class="arch-arrow">&gt;</div>
+            <div class="arch-node batch">DBT<br/><small>500+ SQL models</small></div>
+            <div class="arch-arrow">&gt;</div>
+            <div class="arch-node batch">Redshift<br/><small>32 facts, 128 dims</small></div>
+            <div class="arch-arrow">&gt;</div>
+            <div class="arch-node batch">Power BI<br/><small>Advertiser KPIs</small></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== RTB ENGINE ===================== -->
+    <section class="tab" id="tab-rtb">
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-head"><h3>Submit Bid Request (OpenRTB 2.5)</h3></div>
+          <form id="bid-form" class="form-grid">
+            <label>User ID<input name="user_id" value="user-demo-001"/></label>
+            <label>Device
+              <select name="device_type">
+                <option>mobile</option><option>desktop</option>
+                <option>tablet</option><option>ctv</option>
+              </select>
+            </label>
+            <label>Country
+              <select name="geo_country">
+                <option>US</option><option>GB</option><option>CA</option>
+                <option>AU</option><option>DE</option><option>FR</option>
+                <option>JP</option><option>BR</option><option>IN</option>
+                <option>MX</option>
+              </select>
+            </label>
+            <label>City<input name="geo_city" value="New York"/></label>
+            <label>Site<input name="site_domain" value="nytimes.com"/></label>
+            <label>Slot<input name="ad_slot_id" value="slot-1"/></label>
+            <label>Format
+              <select name="ad_format">
+                <option>banner</option><option>video</option><option>native</option>
+              </select>
+            </label>
+            <label>Floor (CPI $)<input name="floor_price" type="number" step="0.0001" value="0.001"/></label>
+            <label class="full">Segments (comma-sep)<input name="user_segments" value="sports_enthusiast,tech_early_adopter"/></label>
+            <button type="submit" class="btn-primary full">Bid</button>
+          </form>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>Bid Response</h3></div>
+          <pre id="bid-response" class="code-block">Submit a bid request to see the response.</pre>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Engine Stats (live)</h3>
+          <button class="btn-ghost" id="btn-refresh-engine">Refresh</button>
+        </div>
+        <pre id="engine-stats" class="code-block">--</pre>
+      </div>
+    </section>
+
+    <!-- ===================== CAMPAIGNS ===================== -->
+    <section class="tab" id="tab-campaigns">
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Campaign Performance</h3>
+          <span class="muted">CPM, CPA, CTR, Conv, ROAS</span>
+        </div>
+        <div class="table-wrap">
+          <table id="campaign-table" class="data-table">
+            <thead>
+              <tr>
+                <th>Advertiser</th><th>Campaign</th><th>Bid CPM</th>
+                <th>Imp</th><th>Clicks</th><th>CTR</th>
+                <th>Conv</th><th>CVR</th><th>Revenue</th><th>CPA</th><th>ROAS</th>
+                <th>Pacing</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== EXPERIMENTS ===================== -->
+    <section class="tab" id="tab-experiments">
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-head"><h3>Frequentist A/B Test</h3></div>
+          <form id="ab-form" class="form-grid">
+            <label>Control N<input type="number" name="control_total" value="20000"/></label>
+            <label>Control Conv<input type="number" name="control_success" value="480"/></label>
+            <label>Treatment N<input type="number" name="treatment_total" value="20000"/></label>
+            <label>Treatment Conv<input type="number" name="treatment_success" value="600"/></label>
+            <label>α<input type="number" step="0.001" name="alpha" value="0.01"/></label>
+            <button type="submit" class="btn-primary full">Run Test</button>
+          </form>
+          <pre id="ab-result" class="code-block">Run a test to see results.</pre>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>Sample Size Calculator</h3></div>
+          <form id="ss-form" class="form-grid">
+            <label>Baseline rate<input type="number" step="0.001" name="baseline_rate" value="0.025"/></label>
+            <label>MDE (relative)<input type="number" step="0.01" name="mde" value="0.10"/></label>
+            <label>α<input type="number" step="0.01" name="alpha" value="0.05"/></label>
+            <label>Power<input type="number" step="0.01" name="power" value="0.8"/></label>
+            <button type="submit" class="btn-primary full">Compute</button>
+          </form>
+          <pre id="ss-result" class="code-block">--</pre>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Thompson Sampling bandit (per creative)</h3>
+            <button class="btn-ghost" id="btn-mab-refresh">Refresh</button>
+          </div>
+          <canvas id="chart-mab" height="220"></canvas>
+        </div>
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Benjamini–Hochberg FDR</h3>
+            <button class="btn-ghost" id="btn-fdr">Run 50-test simulation</button>
+          </div>
+          <pre id="fdr-result" class="code-block">--</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== CAUSAL ===================== -->
+    <section class="tab" id="tab-causal">
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-head"><h3>Difference-in-Differences</h3></div>
+          <form id="did-form" class="form-grid">
+            <label>Units<input type="number" name="n_units" value="200"/></label>
+            <label>Pre periods<input type="number" name="pre_periods" value="6"/></label>
+            <label>Post periods<input type="number" name="post_periods" value="6"/></label>
+            <label>True effect<input type="number" step="0.01" name="true_effect" value="0.15"/></label>
+            <button type="submit" class="btn-primary full">Estimate</button>
+          </form>
+          <pre id="did-result" class="code-block">--</pre>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>Propensity Score Matching</h3></div>
+          <form id="psm-form" class="form-grid">
+            <label>Users<input type="number" name="n_users" value="800"/></label>
+            <label>True effect<input type="number" step="0.01" name="treatment_effect" value="0.12"/></label>
+            <button type="submit" class="btn-primary full">Estimate</button>
+          </form>
+          <pre id="psm-result" class="code-block">--</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== INFRA ===================== -->
+    <section class="tab" id="tab-infra">
+      <div class="panel">
+        <div class="panel-head"><h3>Platform Health</h3></div>
+        <pre id="infra-stats" class="code-block">--</pre>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>Atlas RTB. Reference platform for ad-tech analytics and bidding.</span>
+    <span>P99 latency, 99.95% SLA, 1M+ events/sec</span>
+  </footer>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>

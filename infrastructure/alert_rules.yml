@@ -1,0 +1,26 @@
+groups:
+  - name: rtb-sla
+    rules:
+      - alert: RTBHighP99Latency
+        expr: histogram_quantile(0.99, rate(bid_latency_ms_bucket[5m])) > 100
+        for: 3m
+        labels: { severity: warning, team: rtb }
+        annotations:
+          summary: "RTB P99 latency above 100ms"
+          description: "Bid decision latency P99 is {{ $value }}ms (target <100ms)."
+
+      - alert: RTBSLABreach
+        expr: avg_over_time(rtb_sla_compliance[10m]) < 0.9995
+        for: 5m
+        labels: { severity: critical, team: rtb }
+        annotations:
+          summary: "RTB SLA below 99.95%"
+          description: "Sustained SLA violation; investigate budget pacing & throughput."
+
+      - alert: BudgetPacingAnomaly
+        expr: campaign_pacing_ratio > 1.5 or campaign_pacing_ratio < 0.5
+        for: 15m
+        labels: { severity: warning, team: ad-ops }
+        annotations:
+          summary: "Campaign {{ $labels.campaign_id }} pacing anomaly"
+          description: "Spend pace ratio = {{ $value }} (expected ~1.0)."

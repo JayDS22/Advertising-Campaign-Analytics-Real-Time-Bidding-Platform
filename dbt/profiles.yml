@@ -1,0 +1,24 @@
+ads_warehouse:
+  target: dev
+  outputs:
+    dev:
+      type: redshift
+      host: "{{ env_var('REDSHIFT_HOST', 'localhost') }}"
+      user: "{{ env_var('REDSHIFT_USER', 'awsuser') }}"
+      password: "{{ env_var('REDSHIFT_PASSWORD', '') }}"
+      port: 5439
+      dbname: ads_warehouse
+      schema: public
+      threads: 8
+      keepalives_idle: 240
+      sslmode: prefer
+    prod:
+      type: redshift
+      host: "{{ env_var('REDSHIFT_HOST') }}"
+      user: "{{ env_var('REDSHIFT_USER') }}"
+      password: "{{ env_var('REDSHIFT_PASSWORD') }}"
+      port: 5439
+      dbname: ads_warehouse
+      schema: public
+      threads: 16
+      sslmode: require

@@ -1,0 +1,28 @@
+version: 2
+
+sources:
+  - name: raw
+    description: "Raw event tables landed by the streaming pipeline."
+    schema: raw
+    tables:
+      - name: fact_impression
+        description: "Impression events from the RTB engine."
+        loaded_at_field: ts
+        freshness:
+          warn_after: { count: 6,  period: hour }
+          error_after: { count: 24, period: hour }
+        columns:
+          - name: event_id
+            tests: [unique, not_null]
+          - name: campaign_id
+            tests: [not_null]
+      - name: fact_click
+        loaded_at_field: ts
+        columns:
+          - name: event_id
+            tests: [unique, not_null]
+      - name: fact_conversion
+        loaded_at_field: ts
+        columns:
+          - name: event_id
+            tests: [unique, not_null]

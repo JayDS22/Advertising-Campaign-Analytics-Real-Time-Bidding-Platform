@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+.eggs/
+*.egg-info/
+
+# Testing / tooling
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# DBT
+target/
+dbt_packages/
+logs/
+
+# Airflow runtime
+airflow.db
+airflow-webserver.pid
+standalone_admin_password.txt
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+
+# Build artifacts
+dist/
+build/
+*.log
+
+# Local tool caches
+graphify-out/
+.claude/
